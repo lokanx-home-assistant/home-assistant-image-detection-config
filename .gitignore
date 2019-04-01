@@ -15,8 +15,6 @@
 
 # Directories to include
 !custom_components/**
-!deps/**
-#!tensorflow/**
 !python_scripts/**
 
 # Include gitignore

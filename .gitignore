@@ -1,23 +1,25 @@
 # Ignore everything
 *
 
-
 # But descend into directories
-#!*/
-#!
+!*/
 
-# Ignore python compiled files
-#*.pyc
-#__pycache__
+# Root files to inclide
+!/.HA_VERSION
+!/LICENSE
+!/automations.yaml
+!/configuration.yaml
+!/groups.yaml
+!/scripts.yaml
 
-!.HA_VERSION
-!automations.yaml
-!configuration.yaml
-!groups.yaml
-!scripts.yaml
-
-#!custom_components/**
+# Directories to include
+!custom_components/**
+!deps/**
 #!tensorflow/**
+!python_scripts/**
 
 # Include gitignore
 !.gitignore
+
+# Ignore python compiled files
+*.pyc

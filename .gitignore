@@ -1,0 +1,23 @@
+# Ignore everything
+*
+
+
+# But descend into directories
+#!*/
+#!
+
+# Ignore python compiled files
+#*.pyc
+#__pycache__
+
+!.HA_VERSION
+!automations.yaml
+!configuration.yaml
+!groups.yaml
+!scripts.yaml
+
+#!custom_components/**
+#!tensorflow/**
+
+# Include gitignore
+!.gitignore

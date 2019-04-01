@@ -1,0 +1,181 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home_Tensorflow
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret homeassistant_latitude
+  longitude: !secret homeassistant_longitude  
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 0
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: !secret homeassistant_time_zone
+  # Customization file
+  customize: !include customize.yaml
+  whitelist_external_dirs:
+    - /srv/shared-data
+#   - /tmp
+#   - /qnap-data
+
+
+# Show links to resources in log and frontend
+#introduction:
+
+# Enables the frontend
+frontend:
+
+# System health
+system_health:
+
+# Enables configuration UI
+config:
+
+http:
+  # Secrets are defined in the file secrets.yaml
+  # api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # base_url: example.duckdns.org:8123
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+#discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Weather prediction
+sensor:
+  - platform: yr
+
+# Text to speech
+tts:
+  - platform: google
+
+# Recorder confg
+recorder:
+  purge_keep_days: 10
+  purge_interval: 1
+  db_url: !secret recorder_db_url
+
+# Cloud
+cloud:
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+# Booleans
+input_boolean:
+  motion_front:
+    name: Motion Front
+    initial: off
+    icon: mdi:walk
+  motion_back:
+    name: Motion Back
+    initial: off
+    icon: mdi:walk
+
+timer:
+  motion_timer_back:
+    duration: '00:00:45'
+  motion_timer_front:
+    duration: '00:00:45'
+
+# Python scripts
+python_script:
+
+# mqtt
+mqtt:
+  broker: 192.168.1.191
+  port: 1883
+  discovery: true
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery_prefix: !secret mqtt_discovery_prefix
+
+# Video playing for cameras
+ffmpeg:
+
+camera:
+  - platform: ffmpeg
+    input: !secret camera_ma_front_input
+    name: ma_front
+    extra_arguments: -pred 1
+  - platform: ffmpeg
+    input: !secret camera_ma_back_input
+    name: ma_back
+    extra_arguments: -pred 1
+  - platform: local_file
+    file_path: /srv/shared-data/image_detection/tensorflow_ma_front_latest.jpg
+    name: Person Detection Front - Tensorflow
+  - platform: local_file
+    file_path: /srv/shared-data/image_detection/tensorflow_ma_back_latest.jpg
+    name: Person Detection Back - Tensorflow
+#  - platform: local_file
+#    file_path: /srv/shared-data/image_detection/opencv_ma_front_latest.jpg
+#    name: Person Detection Front - OpenCV
+#  - platform: local_file
+#    file_path: /srv/shared-data/image_detection/opencv_ma_back_latest.jpg
+#    name: Person Detection Back - openCV
+
+image_processing:
+  - platform: tensorflow
+    scan_interval: 10000
+    confidence: 40
+    source:
+      - entity_id: camera.ma_front
+      - entity_id: camera.ma_back
+    file_out:
+      - "/srv/shared-data/image_detection/tensorflow_{{ camera_entity.split('.')[1] }}_latest.jpg"
+      - "/srv/shared-data/image_detection/tensorflow/{{ camera_entity.split('.')[1] }}/{{ now().strftime('%Y%m%d') }}/{{ camera_entity.split('.')[1] }}_{{ now().strftime('%Y%m%d_%H%M%S') }}.jpg"
+    model:
+      graph: /config/tensorflow/ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb
+      categories:
+        - category: person
+          area:
+            # Exclude top 10% of image
+            top: 0.3
+            # Exclude right 30% of image
+            right: 0.67
+            # Exclude left 15% of image
+            left: 0.15
+#  - platform: opencv_darknet
+#    name: Camera Object Detection
+#    scan_interval: 10000 # Default 10
+#    source:
+#      - entity_id: camera.ma_front
+#      - entity_id: camera.ma_back
+#    file_out:
+#      - "/srv/shared-data/image_detection/opencv_{{ camera_entity.split('.')[1] }}_latest.jpg"
+#      - "/srv/shared-data/image_detection/opencv/{{ camera_entity.split('.')[1] }}_{{ now().strftime('%Y%m%d_%H%M%S') }}.jpg"
+#    options:
+#      detect_model: /home/homeassistant/.homeassistant/deps/yolov3-tiny.cfg
+#      weights: /config/deps/yolov3-tiny.weights
+#      labels: /config/deps/coco.names
+#      confidence: 0.40
+      
+panel_iframe:
+  configurator:
+    title: Editor
+    icon: mdi:wrench
+    url: http://192.168.1.191:9280

@@ -1,0 +1,231 @@
+- id: '1548373814190'
+  alias: Back Side Person Detected - Tensorflow - Notify
+  trigger:
+  - entity_id: image_processing.tensorflow_ma_back
+    platform: state
+    to: '1'
+  condition: []
+  action:
+  - data:
+      payload: back
+      qos: '0'
+      retain: 'false'
+      topic: homeassistant/persondetected/tensorflow/back
+    service: mqtt.publish
+  initial_state: 'on'
+- id: '1548373915290'
+  alias: Front Side Person Detected - Tensorflow - Notify
+  trigger:
+  - entity_id: image_processing.tensorflow_ma_front
+    platform: state
+    to: '1'
+  condition: []
+  action:
+  - data:
+      payload: front
+      qos: '0'
+      retain: 'false'
+      topic: homeassistant/persondetected/tensorflow/front
+    service: mqtt.publish
+  initial_state: 'on'
+- id: '1548549960976'
+  alias: Back Side Person Detected - OpenCV - Notify
+  trigger:
+  - entity_id: image_processing.opencv_ma_back
+    platform: state
+    to: '1'
+  condition: []
+  action:
+  - data:
+      payload: back
+      qos: '0'
+      retain: 'false'
+      topic: homeassistant/persondetected/opencv/back
+    service: mqtt.publish
+  initial_state: 'on'
+- id: '1548549991451'
+  alias: Front Side Person Detected - OpenCV - Notify
+  trigger:
+  - entity_id: image_processing.opencv_ma_front
+    platform: state
+    to: '1'
+  condition: []
+  action:
+  - data:
+      payload: front
+      qos: '0'
+      retain: 'false'
+      topic: homeassistant/persondetected/opencv/front
+    service: mqtt.publish
+  initial_state: 'on'
+- id: '1550091744537'
+  alias: Motion Back Detected - On
+  trigger:
+  - payload: 'on'
+    platform: mqtt
+    topic: homeassistant/motiondetected/back
+  condition: []
+  action:
+  - data:
+      entity_id: input_boolean.motion_back
+    service: input_boolean.turn_on
+  - alias: ''
+    data:
+      duration: 00:00:45
+      entity_id: timer.motion_timer_back
+    service: timer.start
+  initial_state: 'on'
+- id: '1550091744538'
+  alias: Motion Back Detected - Off
+  trigger:
+  - payload: 'off'
+    platform: mqtt
+    topic: homeassistant/motiondetected/back
+  condition: []
+  action:
+  - data:
+      entity_id: input_boolean.motion_back
+    service: input_boolean.turn_off
+  initial_state: 'on'
+- id: '1550091893801'
+  alias: Motion Front Detected - On
+  trigger:
+  - payload: 'on'
+    platform: mqtt
+    topic: homeassistant/motiondetected/front
+  condition: []
+  action:
+  - data:
+      entity_id: input_boolean.motion_front
+    service: input_boolean.turn_on
+  - data:
+      duration: 00:00:45
+      entity_id: timer.motion_timer_front
+    service: timer.start
+  initial_state: 'on'
+- id: '1550091893802'
+  alias: Motion Front Detected - Off
+  initial_state: 'on'
+  trigger:
+  - platform: mqtt
+    payload: 'off'
+    topic: homeassistant/motiondetected/front
+  condition: []
+  action:
+  - data:
+      entity_id: input_boolean.motion_front
+    service: image_processing.scan
+- id: '1550183630351'
+  alias: Continuous Image Processing Back
+  trigger:
+  - platform: time_pattern
+    seconds: /1
+  condition:
+  - condition: state
+    entity_id: input_boolean.motion_back
+    state: 'on'
+  action:
+  - data:
+      directory: /srv/shared-data/image_detection/tensorflow/ma_back
+      append_today_subdirectory: true
+    service: python_script.create_directory
+  - data:
+      entity_id: image_processing.tensorflow_ma_back
+    service: image_processing.scan
+  - data:
+      message: Running Image Processing Back...
+      name: Image Processing
+    service: logbook.log
+- id: '15501836303512'
+  alias: Continuous Image Processing Front
+  trigger:
+  - platform: time_pattern
+    seconds: /1
+  condition:
+  - condition: state
+    entity_id: input_boolean.motion_front
+    state: 'on'
+  action:
+  - data:
+      directory: /srv/shared-data/image_detection/tensorflow/ma_front
+      append_today_subdirectory: true
+    service: python_script.create_directory
+  - data:
+      entity_id: image_processing.tensorflow_ma_front
+    service: image_processing.scan
+  - data:
+      message: Running Image Processing Front...
+      name: Image Processing
+    service: logbook.log
+  initial_state: 'on'
+- id: '1550184521953'
+  alias: Abort Image Processing Back
+  trigger:
+  - event_data:
+      entity_id: timer.motion_timer_back
+    event_type: timer.finished
+    platform: event
+  condition: []
+  action:
+  - data:
+      entity_id: input_boolean.motion_back
+    service: input_boolean.turn_off
+- id: '1550184521954'
+  alias: Abort Image Processing Front
+  trigger:
+  - event_data:
+      entity_id: timer.motion_timer_front
+    event_type: timer.finished
+    platform: event
+  condition: []
+  action:
+  - data:
+      entity_id: input_boolean.motion_front
+    service: input_boolean.turn_off
+  initial_state: 'on'
+- id: '1550699579072'
+  alias: Continuous Image Snapshot Back
+  trigger:
+  - platform: time_pattern
+    seconds: /2
+  condition:
+  - condition: state
+    entity_id: input_boolean.motion_back
+    state: 'on'
+  action:
+  - data:
+      directory: /srv/shared-data/image_detection/motion_snapshots/ma_back
+      append_today_subdirectory: true
+    service: python_script.create_directory
+  - data:
+      entity_id: camera.ma_back
+      filename: /srv/shared-data/image_detection/motion_snapshots/ma_back/{{ now().strftime("%Y%m%d") }}/ma_back_{{ now().strftime("%Y%m%d_%H%M%S") }}.jpg
+    service: camera.snapshot
+  - data:
+      message: Running Image Snapshots Back...
+      name: Image Snapshot
+    service: logbook.log
+  initial_state: 'on'
+- id: '1550699579073'
+  alias: Continuous Image Snapshot Front
+  trigger:
+  - platform: time_pattern
+    seconds: /2
+  condition:
+  - condition: state
+    entity_id: input_boolean.motion_front
+    state: 'on'
+  action:
+  - data:
+      directory: /srv/shared-data/image_detection/motion_snapshots/ma_front
+      append_today_subdirectory: true
+    service: python_script.create_directory
+  - data:
+      entity_id: camera.ma_front
+      filename: /srv/shared-data/image_detection/motion_snapshots/ma_front/{{ now().strftime("%Y%m%d") }}/ma_front_{{ now().strftime("%Y%m%d_%H%M%S") }}.jpg
+    service: camera.snapshot
+  - data:
+      message: Running Image Snapshots Back...
+      name: Image Snapshot
+    service: logbook.log
+  initial_state: 'on'

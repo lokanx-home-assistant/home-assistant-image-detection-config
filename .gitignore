@@ -11,6 +11,7 @@
 !/configuration.yaml
 !/groups.yaml
 !/scripts.yaml
+!/customize.yaml
 
 # Directories to include
 !custom_components/**

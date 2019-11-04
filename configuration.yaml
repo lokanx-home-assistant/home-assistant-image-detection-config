@@ -1,6 +1,6 @@
 homeassistant:
   # Name of the location where Home Assistant is running
-  name: HomeTensorflow
+  name: Home_Tensorflow
   # Location required to calculate the time the sun rises and sets
   latitude: !secret homeassistant_latitude
   longitude: !secret homeassistant_longitude  

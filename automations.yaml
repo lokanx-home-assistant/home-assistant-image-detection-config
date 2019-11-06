@@ -128,7 +128,7 @@
   - data:
       directory: /srv/shared-data/image_detection/tensorflow/ma_back
       append_today_subdirectory: true
-    service: python_script.create_directory
+    service: python_script_x.create_directory
   - data:
       entity_id: image_processing.tensorflow_ma_back
     service: image_processing.scan
@@ -149,7 +149,7 @@
   - data:
       directory: /srv/shared-data/image_detection/tensorflow/ma_front
       append_today_subdirectory: true
-    service: python_script.create_directory
+    service: python_script_x.create_directory
   - data:
       entity_id: image_processing.tensorflow_ma_front
     service: image_processing.scan
@@ -196,7 +196,7 @@
   - data:
       directory: /srv/shared-data/image_detection/motion_snapshots/ma_back
       append_today_subdirectory: true
-    service: python_script.create_directory
+    service: python_script_x.create_directory
   - data:
       entity_id: camera.ma_back
       filename: /srv/shared-data/image_detection/motion_snapshots/ma_back/{{ now().strftime("%Y%m%d") }}/ma_back_{{ now().strftime("%Y%m%d_%H%M%S") }}.jpg
@@ -219,7 +219,7 @@
   - data:
       directory: /srv/shared-data/image_detection/motion_snapshots/ma_front
       append_today_subdirectory: true
-    service: python_script.create_directory
+    service: python_script_x.create_directory
   - data:
       entity_id: camera.ma_front
       filename: /srv/shared-data/image_detection/motion_snapshots/ma_front/{{ now().strftime("%Y%m%d") }}/ma_front_{{ now().strftime("%Y%m%d_%H%M%S") }}.jpg

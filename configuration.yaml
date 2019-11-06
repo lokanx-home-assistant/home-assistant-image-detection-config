@@ -108,6 +108,9 @@ timer:
 # Python scripts
 python_script:
 
+# Python scripts x
+python_script_x:
+
 # mqtt
 mqtt:
   broker: 192.168.1.191

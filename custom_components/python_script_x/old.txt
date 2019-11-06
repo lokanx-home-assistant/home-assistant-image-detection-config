@@ -22,9 +22,9 @@ REQUIREMENTS = ['restrictedpython==4.0b8']
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = 'python_script'
+DOMAIN = 'python_script_x'
 
-FOLDER = 'python_scripts'
+FOLDER = 'python_scripts_x'
 
 CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema(dict)

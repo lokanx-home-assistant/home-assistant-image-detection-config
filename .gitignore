@@ -22,3 +22,6 @@
 
 # Ignore python compiled files
 *.pyc
+custom_components/._.DS_Store
+custom_components/.DS_Store
+custom_components/python_script_x/._*

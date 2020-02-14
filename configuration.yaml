@@ -75,6 +75,11 @@ tts:
   - platform: google_translate
     service_name: google_say
 
+# Breaking changes
+breaking_changes:
+  name: potential breaking changes
+  scan_interval: 60
+
 # Recorder confg
 recorder:
   purge_keep_days: 10

@@ -4,24 +4,34 @@
 # But descend into directories
 !*/
 
-# Root files to inclide
+# Root files to include
 !/.HA_VERSION
 !/LICENSE
 !/automations.yaml
 !/configuration.yaml
 !/groups.yaml
 !/scripts.yaml
+!/scenes.yaml
+!/ui_lovelace.yaml
 !/customize.yaml
+!/ui-lovelace.yaml
 
 # Directories to include
 !custom_components/**
+!lovelace/**
+!packages/**
 !python_scripts/**
+!python_scripts_x/**
 
 # Include gitignore
 !.gitignore
 
 # Ignore python compiled files
 *.pyc
-custom_components/._.DS_Store
-custom_components/.DS_Store
-custom_components/python_script_x/._*
+
+# Igonre Mac OS X files
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
+**/._*

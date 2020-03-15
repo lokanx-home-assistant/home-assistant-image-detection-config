@@ -124,6 +124,12 @@ mqtt:
   username: !secret mqtt_username
   password: !secret mqtt_password
   discovery_prefix: !secret mqtt_discovery_prefix
+  birth_message:
+    topic: 'hass/status'
+    payload: 'online'
+  will_message:
+    topic: 'hass/status'
+    payload: 'offline'
 
 # Video playing for cameras
 ffmpeg:

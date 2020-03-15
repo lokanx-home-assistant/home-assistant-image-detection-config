@@ -15,6 +15,7 @@
 !/ui_lovelace.yaml
 !/customize.yaml
 !/ui-lovelace.yaml
+!README.md
 
 # Directories to include
 !custom_components/**
